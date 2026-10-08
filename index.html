@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Bobomurod &amp; Sarvinoz — Taklifnoma</title>
+  <meta name="description" content="Bobomurod va Sarvinozning to'y taklifnomasi. 2026-yil 24-oktabr kuni soat 18:00 da Bandixon tumani Shukorna to'yxonasida sizni kutamiz." />
+  <meta property="og:title" content="Bobomurod &amp; Sarvinoz — Taklifnoma" />
+  <meta property="og:description" content="24-oktabr, 18:00 · Shukorna to'yxonasi, Bandixon tumani" />
+  <meta property="og:image" content="photo.jpg" />
+  <meta name="theme-color" content="#a67d2b" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Great+Vibes&family=Imperial+Script&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cream: #f8efe1;
+      --cream-2: #efe4d3;
+      --paper: #f5f0e8;
+      --gold: #a67d2b;
+      --gold-light: #d8b56a;
+      --brown: #6c513f;
+      --wine: #7a1420;
+      --script: "Imperial Script", "Great Vibes", cursive;
+      --serif: "Playfair Display", serif;
+      --sans: Lato, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      color: var(--brown);
+      background: var(--cream);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    body.locked { overflow: hidden; height: 100vh; }
+
+    /* ───────── Envelope (intro) ───────── */
+    .envelope {
+      position: fixed; inset: 0; z-index: 50;
+      background: #ece3d4;
+      cursor: pointer;
+      display: grid; place-items: center;
+      transition: transform 1.2s cubic-bezier(.7,0,.3,1), opacity 1.2s ease;
+      overflow: hidden;
+    }
+    .envelope.opened { transform: translateY(-105%); opacity: 0; pointer-events: none; }
+    /* subtle paper texture + embossed vines (pure CSS) */
+    .envelope::before {
+      content: ""; position: absolute; inset: 0;
+      background:
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,.6), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,.5), transparent 45%),
+        repeating-radial-gradient(circle at 50% 50%, rgba(0,0,0,.012) 0 2px, transparent 2px 4px);
+    }
+    /* two flaps forming the "X" envelope look */
+    .flap {
+      position: absolute; left: 0; right: 0; height: 52%;
+      background: linear-gradient(180deg, #f1e9dc, #e8dece);
+      filter: drop-shadow(0 4px 6px rgba(90,60,30,.15));
+      transition: transform 1s ease;
+    }
+    .flap.top { top: 0; clip-path: polygon(0 0, 100% 0, 50% 100%); transform-origin: top; }
+    .flap.bottom { bottom: 0; clip-path: polygon(0 100%, 100% 100%, 50% 0); background: linear-gradient(0deg, #f1e9dc, #e6dbca); }
+    .envelope.opening .flap.top { transform: rotateX(180deg); }
+    .vine {
+      position: absolute; top: 0; bottom: 0; width: 70px; opacity: .55;
+      background: repeating-linear-gradient(170deg, transparent 0 38px, rgba(255,255,255,.9) 38px 40px, transparent 40px 80px);
+      -webkit-mask: radial-gradient(circle 9px, #000 98%, transparent) 0 0 / 35px 60px;
+              mask: radial-gradient(circle 9px, #000 98%, transparent) 0 0 / 35px 60px;
+    }
+    .vine.l { left: 10px; } .vine.r { right: 10px; }
+
+    .seal {
+      position: relative; z-index: 2;
+      width: 150px; height: 150px;
+      display: grid; place-items: center;
+      /* irregular wax edge */
+      border-radius: 48% 52% 50% 50% / 52% 47% 53% 48%;
+      background: radial-gradient(circle at 35% 30%, #b3262f, #7a1420 55%, #4d0a12);
+      box-shadow:
+        0 10px 25px rgba(60,10,15,.45),
+        inset 0 -6px 12px rgba(0,0,0,.35),
+        inset 0 6px 10px rgba(255,255,255,.18);
+      transition: transform .9s ease, opacity .9s ease;
+      animation: pulse 2.6s ease-in-out infinite;
+    }
+    .seal::before { /* inner pressed ring */
+      content: ""; position: absolute; inset: 18px; border-radius: 50%;
+      border: 2px solid rgba(216,181,106,.55);
+      box-shadow: inset 0 3px 8px rgba(0,0,0,.4), 0 1px 0 rgba(255,255,255,.12);
+    }
+    .seal span {
+      font-family: var(--script); font-size: 44px;
+      background: linear-gradient(180deg, #f3d98f, #b8892f);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 1px 0 rgba(0,0,0,.1);
+    }
+    .seal small { font-size: 22px; margin: 0 4px; }
+    .envelope.opening .seal { transform: scale(1.3); opacity: 0; animation: none; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+    .tap-hint {
+      position: absolute; bottom: 22%; left: 0; right: 0; text-align: center; z-index: 2;
+      letter-spacing: .35em; font-size: 11px; text-transform: uppercase; color: #9a8a76;
+      animation: float 2s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+    /* ───────── Top controls ───────── */
+    .lang {
+      position: fixed; top: 14px; right: 14px; z-index: 60;
+      display: flex; gap: 2px; padding: 3px;
+      border-radius: 999px; background: rgba(255,250,240,.85);
+      border: 1px solid rgba(166,125,43,.35); backdrop-filter: blur(6px);
+    }
+    .lang button {
+      border: 0; background: none; cursor: pointer; padding: 6px 12px;
+      border-radius: 999px; font: 700 11px var(--sans); letter-spacing: .1em; color: #a59577;
+    }
+    .lang button.active { background: var(--gold); color: #fff; }
+    .music {
+      position: fixed; right: 16px; bottom: 18px; z-index: 60;
+      width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer;
+      background: radial-gradient(circle at 35% 30%, #a0522d, #5c2a12);
+      color: #fff; font-size: 16px; box-shadow: 0 6px 16px rgba(60,30,10,.35);
+      display: none;
+    }
+    .music.ready { display: block; }
+
+    /* ───────── Hero with the couple photo ───────── */
+    .hero {
+      position: relative; min-height: 100svh;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+      text-align: center; padding: 0 20px 70px; color: #fff;
+      background: url("photo.jpg") center 30% / cover no-repeat;
+      overflow: hidden;
+    }
+    .hero::before { /* darken bottom so text reads over the photo */
+      content: ""; position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(40,25,15,.15) 0%, rgba(40,25,15,0) 25%, rgba(35,20,12,.6) 50%, rgba(25,14,8,.88) 75%, rgba(20,12,6,.95) 100%);
+    }
+    .hero > * { position: relative; text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+    .hero .kicker { font-family: var(--script); font-size: 34px; color: var(--gold-light); }
+    .hero .date {
+      font-family: var(--serif); font-size: 22px; letter-spacing: .08em; margin: 4px 0 10px;
+      display: flex; gap: 12px; align-items: center;
+    }
+    .hero .date i { width: 1px; height: 20px; background: rgba(255,255,255,.6); }
+    .hero h1 { font-family: var(--script); font-weight: 400; line-height: .95; text-shadow: 0 4px 20px rgba(0,0,0,.4); }
+    .hero h1 span { display: block; font-size: clamp(58px, 17vw, 96px); }
+    .hero h1 .amp { font-size: 40px; color: var(--gold-light); margin: 4px 0; }
+    .scroll-hint {
+      margin-top: 22px; color: #f1e3c4; text-decoration: none;
+      font-family: var(--script); font-size: 26px; display: flex; flex-direction: column; align-items: center;
+    }
+    .scroll-hint b { font-family: var(--sans); font-weight: 300; animation: float 2s infinite; }
+
+    /* ───────── Sections ───────── */
+    section { position: relative; padding: 80px 24px; text-align: center; }
+    section:nth-of-type(even) { background: var(--cream-2); }
+    /* torn-paper edge between sections */
+    section + section::before {
+      content: ""; position: absolute; top: -10px; left: 0; right: 0; height: 20px;
+      background: inherit;
+      -webkit-mask: radial-gradient(12px 10px at 50% 100%, #000 98%, transparent) 0 0 / 22px 20px repeat-x;
+              mask: radial-gradient(12px 10px at 50% 100%, #000 98%, transparent) 0 0 / 22px 20px repeat-x;
+    }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    h2 {
+      font-family: var(--script); font-weight: 400; color: var(--gold);
+      font-size: clamp(40px, 11vw, 54px); margin-bottom: 26px;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+    }
+    h2::before, h2::after { content: "❦"; font-family: serif; font-size: 22px; opacity: .7; }
+    h2::before { transform: scaleX(-1); }
+    p.lead { font-family: var(--serif); font-size: 18px; line-height: 1.7; }
+
+    .bismillah { font-family: Amiri, serif; font-size: 28px; color: var(--gold); margin-bottom: 26px; }
+    .poem { font-family: var(--script); font-size: 38px; line-height: 1.25; color: var(--brown); margin-bottom: 26px; }
+
+    /* countdown */
+    .timer { display: flex; justify-content: center; align-items: flex-start; gap: 6px; }
+    .timer div { min-width: 64px; }
+    .timer b { display: block; font-family: var(--serif); font-weight: 400; font-size: 40px; color: var(--gold); }
+    .timer small { font-size: 13px; color: #9a7f55; }
+    .timer em { font-style: normal; font-size: 32px; color: var(--gold); line-height: 1.4; }
+
+    /* schedule */
+    .agenda { list-style: none; position: relative; }
+    .agenda::before { content: ""; position: absolute; left: 50%; top: 10px; bottom: 10px; width: 1px; background: #b9a58c; }
+    .agenda li { display: grid; grid-template-columns: 1fr 30px 1fr; align-items: center; padding: 12px 0; }
+    .agenda time { font-family: var(--serif); font-size: 28px; text-align: right; padding-right: 14px; }
+    .agenda li::after { content: ""; grid-column: 2; grid-row: 1; justify-self: center; width: 9px; height: 9px; transform: rotate(45deg); background: #8b7260; }
+    .agenda span { grid-column: 3; text-align: left; padding-left: 14px; font-family: var(--serif); font-size: 17px; }
+
+    /* address */
+    .venue { font-family: var(--serif); font-size: 24px; margin-bottom: 6px; }
+    .addr { color: #8e7a66; margin-bottom: 26px; }
+    .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; padding: 13px 22px; border-radius: 999px; text-decoration: none;
+      font: 700 12px var(--sans); letter-spacing: .14em; text-transform: uppercase;
+      border: 1px solid var(--gold); color: var(--gold); transition: .25s;
+    }
+    .btn:hover, .btn.solid { background: var(--gold); color: #fff; }
+
+    /* photo memory */
+    .frame {
+      margin: 0 auto; max-width: 340px; padding: 10px; background: #fff;
+      box-shadow: 0 14px 30px rgba(90,60,30,.18); transform: rotate(-2deg);
+    }
+    .frame img { width: 100%; display: block; }
+
+    /* dress code / gift cards */
+    .cards { display: grid; gap: 18px; }
+    .card { background: rgba(255,255,255,.55); border: 1px solid rgba(166,125,43,.25); border-radius: 18px; padding: 26px 20px; }
+    .card h3 { font-family: var(--script); font-weight: 400; font-size: 36px; color: var(--gold); margin-bottom: 6px; }
+
+    .closing h2::before, .closing h2::after { display: none; }
+    .closing .names { font-family: var(--serif); font-size: 26px; color: var(--gold); }
+    footer { text-align: center; padding: 20px; font-size: 11px; letter-spacing: .3em; color: #b9a58c; background: var(--cream-2); }
+
+    /* scroll reveal */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    /* falling petals */
+    .petal {
+      position: fixed; top: -30px; z-index: 40; pointer-events: none;
+      width: 14px; height: 18px; border-radius: 80% 0 80% 0;
+      background: linear-gradient(135deg, #f6d9c4, #e3a9a0);
+      opacity: .85; animation: fall linear forwards;
+    }
+    @keyframes fall { to { transform: translate(var(--dx), 110vh) rotate(540deg); } }
+    @media (prefers-reduced-motion: reduce) { .petal { display: none; } .reveal { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body class="locked">
+
+  <!-- Language switch -->
+  <nav class="lang" aria-label="Til">
+    <button data-lang="uz" class="active">UZ</button>
+    <button data-lang="ru">RU</button>
+    <button data-lang="en">EN</button>
+  </nav>
+
+  <!-- Music: put a file named music.mp3 next to index.html and the button appears -->
+  <audio id="audio" src="music.mp3" loop preload="auto"></audio>
+  <button class="music" id="musicBtn" aria-label="Musiqa">▶</button>
+
+  <!-- Envelope intro -->
+  <div class="envelope" id="envelope" role="button" aria-label="Ochish">
+    <div class="flap bottom"></div>
+    <div class="flap top"></div>
+    <div class="seal"><span>B<small>&amp;</small>S</span></div>
+    <p class="tap-hint">︿<br /><span data-i18n="tap">Ochish uchun bosing</span></p>
+  </div>
+
+  <main>
+    <!-- HERO: your photo as background -->
+    <header class="hero">
+      <p class="kicker" data-i18n="weddingDay">Nikoh kuni</p>
+      <p class="date"><span>24.10.26</span><i></i><span>18:00</span></p>
+      <h1><span>Bobomurod</span><span class="amp">&amp;</span><span>Sarvinoz</span></h1>
+      <a class="scroll-hint" href="#invite"><span data-i18n="scroll">Pastga suring</span><b>﹀</b></a>
+    </header>
+
+    <!-- Invitation text -->
+    <section id="invite">
+      <div class="wrap reveal">
+        <p class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+        <p class="poem" data-i18n-html="poem">Ikki qalb<br />Bitta taqdir<br />Alloh yozgan umr</p>
+        <p class="lead" data-i18n="inviteText">Sizni farzandlarimiz Bobomurod va Sarvinozning nikoh to'yi munosabati bilan bo'lib o'tadigan "Visol oqshomi"ga taklif etamiz</p>
+      </div>
+    </section>
+
+    <!-- Countdown -->
+    <section>
+      <div class="wrap reveal">
+        <h2 data-i18n="countdown">Bayramgacha qoldi</h2>
+        <div class="timer" role="timer">
+          <div><b id="d">00</b><small data-i18n="days">Kun</small></div><em>:</em>
+          <div><b id="h">00</b><small data-i18n="hours">Soat</small></div><em>:</em>
+          <div><b id="m">00</b><small data-i18n="mins">Daqiqa</small></div><em>:</em>
+          <div><b id="s">00</b><small data-i18n="secs">Soniya</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Schedule (edit times freely) -->
+    <section>
+      <div class="wrap reveal">
+        <h2 data-i18n="agenda">Kun tartibi</h2>
+        <ul class="agenda">
+          <li><time>18:00</time><span data-i18n="a1">Mehmonlarni kutib olish</span></li>
+          <li><time>18:30</time><span data-i18n="a2">Kelin-kuyov tashrifi</span></li>
+          <li><time>19:00</time><span data-i18n="a3">Tabriklar</span></li>
+          <li><time>20:00</time><span data-i18n="a4">Kechki ziyofat</span></li>
+          <li><time>21:00</time><span data-i18n="a5">Raqs va musiqa</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Address -->
+    <section>
+      <div class="wrap reveal">
+        <h2 data-i18n="address">Manzil</h2>
+        <p class="venue" data-i18n="venue">Shukorna to'yxonasi</p>
+        <p class="addr" data-i18n="addr">Bandixon tumani, Surxondaryo viloyati</p>
+        <div class="btns">
+          <a class="btn solid" target="_blank" rel="noopener"
+             href="https://www.google.com/maps/search/?api=1&query=Shukorna+to'yxonasi+Bandixon">Google Maps</a>
+          <a class="btn" target="_blank" rel="noopener"
+             href="https://yandex.uz/maps/?text=Shukorna%20to'yxonasi%20Bandixon">Yandex</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Memory -->
+    <section>
+      <div class="wrap reveal">
+        <h2 data-i18n="memories">Xotiralarimiz</h2>
+        <figure class="frame"><img src="photo.jpg" alt="Bobomurod va Sarvinoz" loading="lazy" /></figure>
+      </div>
+    </section>
+
+    <!-- Dress code & gift -->
+    <section>
+      <div class="wrap cards reveal">
+        <div class="card"><h3 data-i18n="dress">Kiyim uslubi</h3><p data-i18n="dressText">Bayramona uslub</p></div>
+        <div class="card"><h3 data-i18n="gift">Sovgʻa haqida</h3><p data-i18n="giftText">Eng qimmatli sovgʻa — sizning ishtirokingiz.</p></div>
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="closing">
+      <div class="wrap reveal">
+        <h2 data-i18n="closing">Sizni koʻrishdan baxtiyor boʻlamiz!</h2>
+        <p class="names">Bobomurod va Sarvinoz</p>
+      </div>
+    </section>
+  </main>
+  <footer>24 · 10 · 2026</footer>
+
+  <script>
+    // Wedding moment in Uzbekistan time (UTC+5)
+    const WEDDING = new Date("2026-10-24T18:00:00+05:00");
+
+    // ───── i18n ─────
+    const T = {
+      uz: {}, // UZ = text already in the HTML
+      ru: {
+        tap: "Нажмите, чтобы открыть", weddingDay: "День свадьбы", scroll: "Листайте вниз",
+        poem: "Два сердца<br>Одна судьба<br>Предначертано Всевышним",
+        inviteText: "Приглашаем вас на свадебный вечер «Висол оқшоми», посвящённый бракосочетанию Бобомурода и Сарвиноз",
+        countdown: "До торжества", days: "Дней", hours: "Часов", mins: "Минут", secs: "Секунд",
+        agenda: "Программа", a1: "Встреча гостей", a2: "Выход молодожёнов", a3: "Поздравления", a4: "Праздничный ужин", a5: "Танцы и музыка",
+        address: "Адрес", venue: "Ресторан «Шукорна»", addr: "Бандиханский район, Сурхандарьинская область",
+        memories: "Наши моменты", dress: "Дресс-код", dressText: "Праздничный стиль",
+        gift: "О подарках", giftText: "Самый ценный подарок — ваше присутствие.", closing: "Будем счастливы видеть вас!"
+      },
+      en: {
+        tap: "Tap to open", weddingDay: "Wedding day", scroll: "Scroll down",
+        poem: "Two hearts<br>One destiny<br>Written by the Almighty",
+        inviteText: "We kindly invite you to the wedding celebration of Bobomurod and Sarvinoz",
+        countdown: "Countdown", days: "Days", hours: "Hours", mins: "Minutes", secs: "Seconds",
+        agenda: "Schedule", a1: "Guest welcome", a2: "Couple's entrance", a3: "Congratulations", a4: "Dinner", a5: "Dance & music",
+        address: "Venue", venue: "Shukorna wedding hall", addr: "Bandixon district, Surkhandarya region",
+        memories: "Our moments", dress: "Dress code", dressText: "Festive attire",
+        gift: "Gifts", giftText: "Your presence is the most precious gift.", closing: "We look forward to seeing you!"
+      }
+    };
+    // cache original Uzbek text so we can switch back
+    document.querySelectorAll("[data-i18n]").forEach(el => T.uz[el.dataset.i18n] = el.textContent);
+    document.querySelectorAll("[data-i18n-html]").forEach(el => T.uz[el.dataset.i18nHtml] = el.innerHTML);
+
+    function setLang(lang) {
+      const dict = T[lang];
+      document.querySelectorAll("[data-i18n]").forEach(el => el.textContent = dict[el.dataset.i18n]);
+      document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = dict[el.dataset.i18nHtml]);
+      document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("active", b.dataset.lang === lang));
+      document.documentElement.lang = lang;
+    }
+    document.querySelectorAll(".lang button").forEach(b => b.onclick = e => { e.stopPropagation(); setLang(b.dataset.lang); });
+
+    // ───── Music (button only shows if music.mp3 exists) ─────
+    const audio = document.getElementById("audio");
+    const musicBtn = document.getElementById("musicBtn");
+    audio.addEventListener("canplay", () => musicBtn.classList.add("ready"), { once: true });
+    const syncBtn = () => musicBtn.textContent = audio.paused ? "▶" : "❚❚";
+    musicBtn.onclick = () => { audio.paused ? audio.play() : audio.pause(); };
+    audio.onplay = audio.onpause = syncBtn;
+
+    // ───── Envelope open ─────
+    const env = document.getElementById("envelope");
+    env.addEventListener("click", () => {
+      env.classList.add("opening");                 // seal fades, flap flips
+      audio.play().catch(() => {});                 // user gesture → autoplay allowed
+      setTimeout(() => {
+        env.classList.add("opened");                // envelope slides away
+        document.body.classList.remove("locked");
+        startPetals();
+      }, 700);
+    }, { once: true });
+
+    // ───── Countdown ─────
+    const pad = n => String(n).padStart(2, "0");
+    function tick() {
+      const diff = Math.max(0, WEDDING - Date.now());
+      const s = Math.floor(diff / 1000);
+      d.textContent = pad(Math.floor(s / 86400));
+      h.textContent = pad(Math.floor(s % 86400 / 3600));
+      m.textContent = pad(Math.floor(s % 3600 / 60));
+      document.getElementById("s").textContent = pad(s % 60);
+    }
+    tick(); setInterval(tick, 1000);
+
+    // ───── Scroll reveal ─────
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }), { threshold: .2 });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+    // ───── Falling petals ─────
+    function startPetals() {
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      setInterval(() => {
+        const p = document.createElement("div");
+        p.className = "petal";
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.setProperty("--dx", (Math.random() * 120 - 60) + "px");
+        p.style.animationDuration = 6 + Math.random() * 5 + "s";
+        p.style.scale = .6 + Math.random() * .7;
+        document.body.appendChild(p);
+        p.addEventListener("animationend", () => p.remove());
+      }, 900);
+    }
+  </script>
+</body>
+</html>
