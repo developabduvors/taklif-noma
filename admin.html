@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Mehmonlar ro'yxati</title>
+  <link href="https://fonts.googleapis.com/css2?family=Imperial+Script&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Lato, sans-serif; background: #f8efe1; color: #6c513f; padding: 24px 16px 60px; }
+    .wrap { max-width: 760px; margin: 0 auto; }
+    h1 { font-family: "Imperial Script", cursive; font-weight: 400; font-size: 46px; color: #a67d2b; text-align: center; }
+    h2 { font-size: 15px; letter-spacing: .15em; text-transform: uppercase; margin: 34px 0 12px; color: #a67d2b; }
+    form { display: flex; gap: 8px; margin: 20px 0; }
+    input { flex: 1; padding: 12px 14px; border: 1px solid #d9c9b0; border-radius: 10px; font: inherit; background: #fffaf2; }
+    button { padding: 12px 18px; border: 0; border-radius: 10px; cursor: pointer; font: 700 13px Lato; color: #fff; background: linear-gradient(90deg, #a67d2b, #5a0f1b); }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat { background: #fffaf2; border: 1px solid #e6d8c2; border-radius: 14px; padding: 16px; text-align: center; }
+    .stat b { display: block; font-size: 30px; color: #a67d2b; }
+    table { width: 100%; border-collapse: collapse; background: #fffaf2; border-radius: 14px; overflow: hidden; font-size: 14px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #efe4d3; vertical-align: top; }
+    th { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #9a8a76; }
+    .yes { color: #2f7a3b; font-weight: 700; } .no { color: #9b2c2c; font-weight: 700; }
+    .del { background: none; color: #9b2c2c; padding: 4px 8px; border: 1px solid #e0b8b8; }
+    .err { color: #9b2c2c; text-align: center; }
+    .muted { color: #9a8a76; font-size: 12px; }
+    @media (max-width: 520px) { td:nth-child(4), th:nth-child(4) { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mehmonlar ro'yxati</h1>
+    <form id="login"><input id="key" type="password" placeholder="Admin kalit" autocomplete="current-password" /><button>Kirish</button></form>
+    <p class="err" id="err"></p>
+    <div id="panel" hidden>
+      <div class="stats">
+        <div class="stat"><b id="cYes">0</b>Keladi</div>
+        <div class="stat"><b id="cNo">0</b>Kelmaydi</div>
+        <div class="stat"><b id="cWish">0</b>Tilaklar</div>
+      </div>
+      <h2>Ishtirok javoblari</h2>
+      <table><thead><tr><th>Ism</th><th>Javob</th><th>Xabar</th><th>Vaqt</th></tr></thead><tbody id="rsvp"></tbody></table>
+      <h2>Tilaklar daftari</h2>
+      <table><thead><tr><th>Kim</th><th>Tabrik</th><th></th></tr></thead><tbody id="wishes"></tbody></table>
+    </div>
+  </div>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const fmt = (d) => new Date(d).toLocaleString("uz-UZ", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+    let key = sessionStorage.getItem("adminKey") || "";
+
+    async function load() {
+      const res = await fetch("/api/rsvp", { headers: { "x-admin-key": key } });
+      if (!res.ok) { $("err").textContent = "Kalit noto'g'ri"; sessionStorage.removeItem("adminKey"); return; }
+      sessionStorage.setItem("adminKey", key);
+      $("err").textContent = ""; $("login").hidden = true; $("panel").hidden = false;
+
+      const rsvp = await res.json();
+      $("cYes").textContent = rsvp.filter((r) => r.attending === "yes").length;
+      $("cNo").textContent = rsvp.filter((r) => r.attending === "no").length;
+      $("rsvp").innerHTML = rsvp.map((r) => `<tr><td>${esc(r.name)}</td>
+        <td class="${r.attending}">${r.attending === "yes" ? "Keladi" : "Kelmaydi"}</td>
+        <td>${esc(r.message) || '<span class="muted">—</span>'}</td><td class="muted">${fmt(r.createdAt)}</td></tr>`).join("")
+        || '<tr><td colspan="4" class="muted">Hali javob yo\'q</td></tr>';
+
+      const wishes = await (await fetch("/api/wishes", { cache: "no-store" })).json();
+      $("cWish").textContent = wishes.length;
+      const sign = (w) => w.relation ? `${w.side === "kelin" ? "Kelinning" : "Kuyovning"} ${w.relation}` : "";
+      $("wishes").innerHTML = wishes.map((w) => `<tr><td><b>${esc(sign(w))}</b><br><span class="muted">${esc(w.name)}</span></td><td>${esc(w.message)}</td>
+        <td><button class="del" data-id="${esc(w.id)}">O'chirish</button></td></tr>`).join("")
+        || '<tr><td colspan="3" class="muted">Hali tilak yo\'q</td></tr>';
+    }
+
+    $("login").onsubmit = (e) => { e.preventDefault(); key = $("key").value.trim(); load(); };
+    $("wishes").onclick = async (e) => {
+      const id = e.target.dataset?.id;
+      if (!id) return;
+      e.target.disabled = true;
+      await fetch(`/api/wishes?id=${encodeURIComponent(id)}`, { method: "DELETE", headers: { "x-admin-key": key } });
+      e.target.closest("tr").remove();
+      $("cWish").textContent = $("wishes").children.length;
+    };
+    if (key) load();
+  </script>
+</body>
+</html>

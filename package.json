@@ -1,0 +1,21 @@
+{
+  "name": "bobomurod-sarvinoz",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/developabduvors/taklif-noma.git"
+  },
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/developabduvors/taklif-noma/issues"
+  },
+  "homepage": "https://github.com/developabduvors/taklif-noma#readme",
+  "dependencies": {
+    "@vercel/blob": "^2.8.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}
