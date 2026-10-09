@@ -77,7 +77,8 @@
     .lang button { border: 0; background: none; cursor: pointer; padding: 6px 12px; border-radius: 999px;
       font: 12px var(--caps); letter-spacing: .1em; color: #a59577; }
     .lang button.active { background: var(--gold); color: #f9f0e0; }
-    .music { position: fixed; right: 14px; bottom: 18px; z-index: 60; display: flex; align-items: center; gap: 8px; }
+    .music { position: fixed; right: 14px; bottom: 18px; z-index: 60; display: none; align-items: center; gap: 8px; }
+    .music.on { display: flex; animation: rise .5s ease; } /* appears only after music starts (pause control) */
     .music button { width: 48px; height: 48px; border-radius: 50%; border: 0; cursor: pointer; color: #fff;
       background: radial-gradient(circle at 35% 30%, #a0522d, #5c2a12); box-shadow: 0 6px 16px rgba(60,30,10,.35);
       display: grid; place-items: center; }
@@ -120,10 +121,6 @@
       .hero .date { font-size: 28px; }
     }
 
-    /* nudge guests to the music button while it's paused (not after they paused it themselves) */
-    .music.nudge button { animation: ring 1.6s ease-out infinite; }
-    @keyframes ring { 0% { box-shadow: 0 0 0 0 rgba(166,125,43,.6), 0 6px 16px rgba(60,30,10,.35); }
-                      100% { box-shadow: 0 0 0 18px rgba(166,125,43,0), 0 6px 16px rgba(60,30,10,.35); } }
 
     /* ═════════ Bands ═════════ */
     .band { position: relative; padding: 90px 22px; text-align: center; }
@@ -627,7 +624,7 @@
     let userPaused = false; // once a guest pauses, never auto-resume
     const syncMusic = () => {
       music.classList.toggle("playing", !audio.paused);
-      music.classList.toggle("nudge", audio.paused && !userPaused);
+      if (!audio.paused) music.classList.add("on");
       document.getElementById("musicIcon").innerHTML = audio.paused ? PLAY : PAUSE;
     };
     audio.onplay = audio.onpause = syncMusic;
