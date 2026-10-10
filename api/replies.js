@@ -1,20 +1,39 @@
-// Replies to a guest-book wish, signed "Kuyov tomonidan" / "Kelin tomonidan" (+ optional name).
-// Anyone can reply; only the admin can delete.
+// Replies to a guest-book wish. Only the groom and the bride can reply: each has a personal
+// secret link (?k=...) and the side ("Kuyov tomonidan" / "Kelin tomonidan") comes from the key itself.
+import { timingSafeEqual } from "node:crypto";
 import { saveEntry, removeEntry, entryExists, isId, clean, isAdmin, json } from "./_store.js";
 
-const SIDES = ["kuyov", "kelin"];
+const DEFAULT_NAME = { kuyov: "Bobomurod", kelin: "Sarvinoz" };
+
+const same = (a, b) => {
+  const x = Buffer.from(String(a)), y = Buffer.from(String(b));
+  return x.length === y.length && timingSafeEqual(x, y);
+};
+// which side does this request's key belong to? ("" = no valid key)
+function sideOf(req) {
+  const key = req.headers.get("x-reply-key") || "";
+  if (key && process.env.KUYOV_KEY && same(key, process.env.KUYOV_KEY)) return "kuyov";
+  if (key && process.env.KELIN_KEY && same(key, process.env.KELIN_KEY)) return "kelin";
+  return "";
+}
+
+// lets the page check a stored key and learn whose it is
+export async function GET(req) {
+  const side = sideOf(req);
+  return side ? json({ side, name: DEFAULT_NAME[side] }) : json({ error: "Ruxsat yo'q" }, 401);
+}
 
 export async function POST(req) {
+  const side = sideOf(req);
+  if (!side) return json({ error: "Faqat kuyov va kelin javob bera oladi" }, 401);
   const body = await req.json().catch(() => ({}));
-  if (body.website) return json({ ok: true }); // honeypot
   const wishId = isId(body.wishId) ? body.wishId : "";
-  const side = SIDES.includes(body.side) ? body.side : "";
-  const name = clean(body.name, 60); // optional
+  const name = clean(body.name, 60) || DEFAULT_NAME[side];
   const message = clean(body.message, 500);
-  if (!wishId || !side || !message) return json({ error: "Tomon va javob matni kerak" }, 400);
+  if (!wishId || !message) return json({ error: "Javob matni kerak" }, 400);
   if (!(await entryExists("wishes", wishId))) return json({ error: "Tabrik topilmadi" }, 404);
   const id = await saveEntry("replies", { wishId, side, name, message });
-  return json({ ok: true, id }, 201);
+  return json({ ok: true, id, side, name }, 201);
 }
 
 export async function DELETE(req) {

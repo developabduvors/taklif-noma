@@ -725,8 +725,8 @@
     }
 
     /* ───── Shared form helper ───── */
-    async function postJSON(url, data) {
-      const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
+    async function postJSON(url, data, headers = {}) {
+      const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(data) });
       if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || res.status);
       return res.json();
     }
@@ -773,10 +773,8 @@
       const replies = el("div", "replies");
       (w.replies || []).forEach(r => replies.append(replyItem(r)));
       li.append(sign, el("p", "wish-text", w.message), replies);
-      if (w.id) { // can only reply to wishes the server knows
-        li.dataset.id = w.id;
-        li.append(el("button", "reply-btn", "↩ " + t("replyBtn")));
-      }
+      if (w.id) li.dataset.id = w.id;
+      if (w.id && couple) li.append(el("button", "reply-btn", "↩ " + t("replyBtn"))); // only the groom / bride see it
       return li;
     }
     function replyItem(r) {
@@ -791,21 +789,15 @@
     /* ───── Replies ───── */
     function replyForm() { // built on demand, in the current language
       const f = el("form", "reply-form"); f.noValidate = true;
-      const sides = el("div", "sides");
-      for (const side of ["kuyov", "kelin"]) {
-        const label = el("label", "side"), r = el("input");
-        r.type = "radio"; r.name = "side"; r.value = side;
-        label.append(r, el("span", "", t(side === "kelin" ? "sideKelin" : "sideKuyov")));
-        sides.append(label);
-      }
-      const name = el("input", "input"); name.name = "name"; name.maxLength = 60; name.placeholder = t("replyName");
+      const who = el("div", "reply-sign");
+      who.append(el("i", couple.side, t(couple.side === "kelin" ? "sideKelin" : "sideKuyov")));
+      const name = el("input", "input"); name.name = "name"; name.maxLength = 60; name.placeholder = t("replyName"); name.value = couple.name;
       const msg = el("textarea", "input"); msg.name = "message"; msg.maxLength = 500; msg.placeholder = t("replyPh");
-      const hp = el("input", "hp"); hp.name = "website"; hp.tabIndex = -1; hp.autocomplete = "off";
       const actions = el("div", "reply-actions");
       const cancel = el("button", "cancel", t("cancel")); cancel.type = "button";
       const send = el("button", "submit sm", t("sendReply")); send.type = "submit";
       actions.append(cancel, send);
-      f.append(sides, name, msg, hp, actions, el("p", "msg"));
+      f.append(who, name, msg, actions, el("p", "msg"));
       return f;
     }
     wishList.addEventListener("click", (e) => {
@@ -824,15 +816,13 @@
     wishList.addEventListener("submit", async (e) => {
       e.preventDefault();
       const f = e.target, li = f.closest("li[data-id]"), msg = f.querySelector(".msg"), btn = f.querySelector(".submit");
-      const data = { wishId: li.dataset.id, side: f.elements.side.value, name: f.elements.namedItem("name").value.trim(),
-                     message: f.elements.message.value.trim(), website: f.elements.website.value };
+      const data = { wishId: li.dataset.id, name: f.elements.namedItem("name").value.trim(), message: f.elements.message.value.trim() };
       msg.className = "msg err";
-      if (!data.side) return msg.textContent = t("needReplySide");
       if (!data.message) return msg.textContent = t("needReply");
       btn.disabled = true; msg.className = "msg"; msg.textContent = t("sending");
       try {
-        const { id } = await postJSON("/api/replies", data);
-        const item = { id, side: data.side, name: data.name, message: data.message };
+        const { id, side, name } = await postJSON("/api/replies", data, { "x-reply-key": couple.key });
+        const item = { id, side, name, message: data.message };
         rememberMine({ kind: "reply", wishId: data.wishId, item });
         li.querySelector(".replies").append(replyItem(item));
         f.remove();
@@ -860,7 +850,24 @@
       }
       return wishes;
     }
+    let couple = null; // { key, side, name } when the groom or bride opened their personal link
+    const coupleReady = (async () => {
+      const url = new URL(location.href), fromLink = url.searchParams.get("k");
+      if (fromLink) { // remember it, and hide it so a screenshot / shared address doesn't leak it
+        store.set("replyKey", fromLink);
+        url.searchParams.delete("k");
+        history.replaceState(null, "", url.pathname + url.search + url.hash);
+      }
+      const key = fromLink || store.get("replyKey");
+      if (!key) return;
+      try {
+        const res = await fetch("/api/replies", { headers: { "x-reply-key": key }, cache: "no-store" });
+        if (res.ok) couple = { key, ...(await res.json()) };
+        else if (res.status === 401) store.set("replyKey", ""); // revoked / wrong key
+      } catch {}
+    })();
     async function loadWishes() {
+      await coupleReady;
       try {
         const res = await fetch("/api/wishes", { cache: "no-cache" });
         if (!res.ok) throw 0;
