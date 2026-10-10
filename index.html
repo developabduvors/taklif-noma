@@ -216,7 +216,7 @@
     .thanks { text-align: center; }
     .thanks h3 { font-family: var(--script); font-weight: 400; font-size: 42px; color: var(--gold); }
 
-    .wish-list { list-style: none; margin-top: 34px; max-height: 520px; overflow-y: auto; padding-right: 6px; text-align: left;
+    .wish-list { list-style: none; margin-top: 34px; max-height: 640px; overflow-y: auto; padding-right: 6px; text-align: left;
       -webkit-mask: linear-gradient(#000 85%, transparent); mask: linear-gradient(#000 85%, transparent); }
     .wish-list li { background: #fdf9f1; border: 1px solid #ecdcc0; border-radius: 6px; padding: 18px 20px; margin-bottom: 14px; animation: rise .5s ease; }
     .wish-sign { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed #e6d3ae; }
@@ -225,6 +225,25 @@
     .wish-sign i { font-style: normal; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #f3e6cc; color: #8a6a2a; }
     .wish-sign i.kelin { background: #f6dcd6; color: #8c4a44; }
     .wish-text { font-size: 18px; line-height: 1.5; word-wrap: break-word; }
+    /* replies under a wish */
+    .replies { margin-top: 12px; display: grid; gap: 8px; }
+    .replies:empty { display: none; }
+    .reply { margin-left: 14px; padding: 10px 14px; border-left: 2px solid var(--gold-light); background: #f7eddc; border-radius: 0 10px 10px 0; animation: rise .4s ease; }
+    .reply-sign { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-bottom: 4px; }
+    .reply-sign i { font-style: normal; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #f3e6cc; color: #8a6a2a; }
+    .reply-sign i.kelin { background: #f6dcd6; color: #8c4a44; }
+    .reply-sign small { font: 12px var(--caps); letter-spacing: .1em; color: #9a8a76; }
+    .reply-text { font-size: 16px; line-height: 1.45; word-wrap: break-word; }
+    .reply-btn { margin-top: 10px; background: none; border: 0; cursor: pointer; padding: 4px 0; color: var(--gold); font: 12px var(--caps); letter-spacing: .12em; }
+    .reply-btn:hover { text-decoration: underline; }
+    .reply-form { margin-top: 12px; display: grid; gap: 10px; padding: 14px; background: #f7eddc; border-radius: 12px; animation: rise .3s ease; }
+    .reply-form .input { font-size: 16px; padding: 11px 14px; background: #fffaf2; }
+    .reply-form textarea.input { min-height: 80px; }
+    .reply-form .side span { padding: 10px 6px; font-size: 14px; background: #fffaf2; }
+    .reply-actions { display: flex; gap: 12px; justify-content: flex-end; align-items: center; }
+    .reply-actions .cancel { background: none; border: 0; cursor: pointer; color: #9a8a76; font-size: 15px; }
+    .submit.sm { width: auto; padding: 11px 18px; font-size: 15px; border-radius: 10px; }
+    .reply-form .msg { margin-top: 0; }
     .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .side input { position: absolute; opacity: 0; pointer-events: none; }
     .side span { display: block; text-align: center; padding: 13px 8px; border: 1px solid #d9cdb9; border-radius: 14px; background: #f3efe7; cursor: pointer; font-size: 16px; transition: .2s; }
@@ -559,7 +578,9 @@
       uz: { // runtime-only strings; the rest is read from the HTML below
         sending: "Yuborilmoqda...", needName: "Iltimos, ismingizni kiriting", needAttend: "Iltimos, javobni tanlang",
         needWish: "Iltimos, tabrik so'zingizni yozing", needSide: "Kuyov yoki kelin tomonini tanlang",
-        needRel: "Kim bo'lishingizni yozing (masalan: yangasi)", netErr: "Xatolik yuz berdi, qaytadan urinib ko'ring", wishLoadErr: "Tilaklarni yuklab bo'lmadi"
+        needRel: "Kim bo'lishingizni yozing (masalan: yangasi)",
+        replyBtn: "Javob berish", replyPh: "Javobingizni yozing", replyName: "Ismingiz (ixtiyoriy)", cancel: "Bekor qilish",
+        sendReply: "Javob yuborish", needReplySide: "Kuyov yoki kelin tomonidan ekanini tanlang", needReply: "Javob matnini yozing", netErr: "Xatolik yuz berdi, qaytadan urinib ko'ring", wishLoadErr: "Tilaklarni yuklab bo'lmadi"
       },
       en: {
         tap: "Tap to open", weddingDay: "Wedding day", scroll: "Scroll down",
@@ -579,7 +600,9 @@
         closing: "We look forward to seeing you!",
         sending: "Sending...", needName: "Please enter your name", needAttend: "Please choose an answer",
         needWish: "Please write your congratulations", needSide: "Please choose the groom's or bride's side",
-        needRel: "Please say who you are (e.g. do'sti)", netErr: "Something went wrong, please try again", wishLoadErr: "Could not load wishes"
+        needRel: "Please say who you are (e.g. do'sti)",
+        replyBtn: "Reply", replyPh: "Write your reply", replyName: "Your name (optional)", cancel: "Cancel",
+        sendReply: "Send reply", needReplySide: "Choose the groom's or bride's side", needReply: "Please write your reply", netErr: "Something went wrong, please try again", wishLoadErr: "Could not load wishes"
       },
       ru: {
         tap: "Нажмите, чтобы открыть", weddingDay: "День свадьбы", scroll: "Листайте вниз",
@@ -599,7 +622,9 @@
         closing: "Будем счастливы видеть вас!",
         sending: "Отправка...", needName: "Пожалуйста, введите имя", needAttend: "Пожалуйста, выберите ответ",
         needWish: "Пожалуйста, напишите поздравление", needSide: "Выберите сторону жениха или невесты",
-        needRel: "Укажите, кем вы приходитесь (напр.: do'sti)", netErr: "Произошла ошибка, попробуйте ещё раз", wishLoadErr: "Не удалось загрузить пожелания"
+        needRel: "Укажите, кем вы приходитесь (напр.: do'sti)",
+        replyBtn: "Ответить", replyPh: "Напишите ответ", replyName: "Ваше имя (необязательно)", cancel: "Отмена",
+        sendReply: "Отправить ответ", needReplySide: "Выберите сторону жениха или невесты", needReply: "Напишите текст ответа", netErr: "Произошла ошибка, попробуйте ещё раз", wishLoadErr: "Не удалось загрузить пожелания"
       }
     };
     // Uzbek source text lives in the HTML; copy it into T.uz so switching back works
@@ -615,7 +640,9 @@
       document.querySelectorAll("[data-i18n-html]").forEach(el => el.innerHTML = t(el.dataset.i18nHtml));
       document.querySelectorAll("[data-i18n-ph]").forEach(el => el.placeholder = t(el.dataset.i18nPh));
       document.querySelectorAll(".lang button").forEach(b => b.classList.toggle("active", b.dataset.lang === l));
-      document.querySelectorAll(".wish-sign i").forEach(i => i.textContent = t(i.classList.contains("kelin") ? "sideKelin" : "sideKuyov"));
+      document.querySelectorAll(".wish-sign i, .reply-sign i").forEach(i => i.textContent = t(i.classList.contains("kelin") ? "sideKelin" : "sideKuyov"));
+      document.querySelectorAll(".reply-btn").forEach(b => b.textContent = "↩ " + t("replyBtn"));
+      document.querySelectorAll(".reply-form").forEach(f => f.remove()); // reopen to get the new language
       document.documentElement.lang = l;
     }
     document.querySelectorAll(".lang button").forEach(b => b.onclick = (e) => { e.stopPropagation(); setLang(b.dataset.lang); });
@@ -743,9 +770,74 @@
       sign.append(el("b", "", w.relation ? signature(w.side, w.relation) : w.name));
       if (w.relation && w.name) sign.append(el("small", "", w.name));
       if (w.side) sign.append(el("i", w.side, t(w.side === "kelin" ? "sideKelin" : "sideKuyov")));
-      li.append(sign, el("p", "wish-text", w.message));
+      const replies = el("div", "replies");
+      (w.replies || []).forEach(r => replies.append(replyItem(r)));
+      li.append(sign, el("p", "wish-text", w.message), replies);
+      if (w.id) { // can only reply to wishes the server knows
+        li.dataset.id = w.id;
+        li.append(el("button", "reply-btn", "↩ " + t("replyBtn")));
+      }
       return li;
     }
+    function replyItem(r) {
+      const d = el("div", "reply");
+      const sign = el("div", "reply-sign");
+      sign.append(el("i", r.side, t(r.side === "kelin" ? "sideKelin" : "sideKuyov")));
+      if (r.name) sign.append(el("small", "", r.name));
+      d.append(sign, el("p", "reply-text", r.message));
+      return d;
+    }
+
+    /* ───── Replies ───── */
+    function replyForm() { // built on demand, in the current language
+      const f = el("form", "reply-form"); f.noValidate = true;
+      const sides = el("div", "sides");
+      for (const side of ["kuyov", "kelin"]) {
+        const label = el("label", "side"), r = el("input");
+        r.type = "radio"; r.name = "side"; r.value = side;
+        label.append(r, el("span", "", t(side === "kelin" ? "sideKelin" : "sideKuyov")));
+        sides.append(label);
+      }
+      const name = el("input", "input"); name.name = "name"; name.maxLength = 60; name.placeholder = t("replyName");
+      const msg = el("textarea", "input"); msg.name = "message"; msg.maxLength = 500; msg.placeholder = t("replyPh");
+      const hp = el("input", "hp"); hp.name = "website"; hp.tabIndex = -1; hp.autocomplete = "off";
+      const actions = el("div", "reply-actions");
+      const cancel = el("button", "cancel", t("cancel")); cancel.type = "button";
+      const send = el("button", "submit sm", t("sendReply")); send.type = "submit";
+      actions.append(cancel, send);
+      f.append(sides, name, msg, hp, actions, el("p", "msg"));
+      return f;
+    }
+    wishList.addEventListener("click", (e) => {
+      if (e.target.classList.contains("reply-btn")) {
+        wishList.querySelectorAll(".reply-form").forEach(f => f.remove()); // one open form at a time
+        const f = replyForm();
+        e.target.after(f);
+        f.querySelector("textarea").focus({ preventScroll: true });
+      }
+      if (e.target.classList.contains("cancel")) e.target.closest(".reply-form").remove();
+    });
+    wishList.addEventListener("input", (e) => { // clear a stale error while the guest fixes the reply
+      const msg = e.target.closest(".reply-form")?.querySelector(".msg.err");
+      if (msg) { msg.textContent = ""; msg.className = "msg"; }
+    });
+    wishList.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const f = e.target, li = f.closest("li[data-id]"), msg = f.querySelector(".msg"), btn = f.querySelector(".submit");
+      const data = { wishId: li.dataset.id, side: f.elements.side.value, name: f.elements.namedItem("name").value.trim(),
+                     message: f.elements.message.value.trim(), website: f.elements.website.value };
+      msg.className = "msg err";
+      if (!data.side) return msg.textContent = t("needReplySide");
+      if (!data.message) return msg.textContent = t("needReply");
+      btn.disabled = true; msg.className = "msg"; msg.textContent = t("sending");
+      try {
+        const { id } = await postJSON("/api/replies", data);
+        const item = { id, side: data.side, name: data.name, message: data.message };
+        rememberMine({ kind: "reply", wishId: data.wishId, item });
+        li.querySelector(".replies").append(replyItem(item));
+        f.remove();
+      } catch { msg.className = "msg err"; msg.textContent = t("netErr"); btn.disabled = false; }
+    });
     // live preview of how the signature will look
     const signPreview = document.getElementById("signPreview");
     wishForm.addEventListener("input", () => {
@@ -755,11 +847,24 @@
       const msg = wishForm.querySelector(".msg");
       if (msg.classList.contains("err")) { msg.textContent = ""; msg.className = "msg"; } // clear stale error while fixing
     });
+    const MY_POSTS = "myPosts", FRESH_MS = 120000;
+    const readMine = () => { try { return (JSON.parse(sessionStorage.getItem(MY_POSTS)) || []).filter(p => Date.now() - p.ts < FRESH_MS); } catch { return []; } };
+    const rememberMine = (post) => { try { sessionStorage.setItem(MY_POSTS, JSON.stringify([...readMine(), { ...post, ts: Date.now() }])); } catch {} };
+    function mergeMine(wishes) {
+      for (const p of readMine()) {
+        if (p.kind === "wish" && !wishes.some(w => w.id === p.item.id)) wishes.unshift({ ...p.item, replies: [] });
+        if (p.kind === "reply") {
+          const w = wishes.find(w => w.id === p.wishId);
+          if (w && !w.replies.some(r => r.id === p.item.id)) w.replies.push(p.item);
+        }
+      }
+      return wishes;
+    }
     async function loadWishes() {
       try {
-        const res = await fetch("/api/wishes");
+        const res = await fetch("/api/wishes", { cache: "no-cache" });
         if (!res.ok) throw 0;
-        const wishes = await res.json();
+        const wishes = mergeMine(await res.json());
         wishList.replaceChildren(...wishes.map(wishItem));
         wishEmpty.hidden = wishes.length > 0;
       } catch { wishEmpty.textContent = t("wishLoadErr"); }
@@ -775,8 +880,10 @@
       if (!data.relation) return msg.textContent = t("needRel");
       btn.disabled = true; msg.className = "msg"; msg.textContent = t("sending");
       try {
-        await postJSON("/api/wishes", data);
-        wishList.prepend(wishItem(data)); wishEmpty.hidden = true; wishList.scrollTop = 0;
+        const { id } = await postJSON("/api/wishes", data);
+        const item = { id, side: data.side, relation: data.relation, name: data.name, message: data.message };
+        rememberMine({ kind: "wish", item });
+        wishList.prepend(wishItem({ ...item, replies: [] })); wishEmpty.hidden = true; wishList.scrollTop = 0;
         f.message.value = ""; msg.textContent = ""; // keep side/relation so a guest can add another wish quickly
       } catch { msg.className = "msg err"; msg.textContent = t("netErr"); }
       finally { btn.disabled = false; }

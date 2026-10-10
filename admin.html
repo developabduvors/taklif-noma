@@ -23,6 +23,8 @@
     th { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #9a8a76; }
     .yes { color: #2f7a3b; font-weight: 700; } .no { color: #9b2c2c; font-weight: 700; }
     .del { background: none; color: #9b2c2c; padding: 4px 8px; border: 1px solid #e0b8b8; }
+    .del.sm { padding: 2px 6px; font-size: 11px; margin-left: 6px; }
+    .reply { margin-top: 8px; padding: 6px 10px; border-left: 2px solid #e2c27d; background: #f7eddc; border-radius: 0 8px 8px 0; font-size: 13px; }
     .err { color: #9b2c2c; text-align: center; }
     .muted { color: #9a8a76; font-size: 12px; }
     @media (max-width: 520px) { td:nth-child(4), th:nth-child(4) { display: none; } }
@@ -68,19 +70,23 @@
       const wishes = await (await fetch("/api/wishes", { cache: "no-store" })).json();
       $("cWish").textContent = wishes.length;
       const sign = (w) => w.relation ? `${w.side === "kelin" ? "Kelinning" : "Kuyovning"} ${w.relation}` : "";
-      $("wishes").innerHTML = wishes.map((w) => `<tr><td><b>${esc(sign(w))}</b><br><span class="muted">${esc(w.name)}</span></td><td>${esc(w.message)}</td>
+      const side = (s) => s === "kelin" ? "Kelin tomonidan" : "Kuyov tomonidan";
+      const replies = (w) => (w.replies || []).map((r) => `<div class="reply"><b>↩ ${side(r.side)}</b>${r.name ? ` · ${esc(r.name)}` : ""}: ${esc(r.message)}
+        <button class="del sm" data-reply="${esc(r.id)}">O'chirish</button></div>`).join("");
+      $("wishes").innerHTML = wishes.map((w) => `<tr><td><b>${esc(sign(w))}</b><br><span class="muted">${esc(w.name)}</span></td><td>${esc(w.message)}${replies(w)}</td>
         <td><button class="del" data-id="${esc(w.id)}">O'chirish</button></td></tr>`).join("")
         || '<tr><td colspan="3" class="muted">Hali tilak yo\'q</td></tr>';
     }
 
     $("login").onsubmit = (e) => { e.preventDefault(); key = $("key").value.trim(); load(); };
     $("wishes").onclick = async (e) => {
-      const id = e.target.dataset?.id;
-      if (!id) return;
+      const { id, reply } = e.target.dataset || {};
+      if (!id && !reply) return;
       e.target.disabled = true;
-      await fetch(`/api/wishes?id=${encodeURIComponent(id)}`, { method: "DELETE", headers: { "x-admin-key": key } });
-      e.target.closest("tr").remove();
-      $("cWish").textContent = $("wishes").children.length;
+      const url = id ? `/api/wishes?id=${encodeURIComponent(id)}` : `/api/replies?id=${encodeURIComponent(reply)}`;
+      await fetch(url, { method: "DELETE", headers: { "x-admin-key": key } });
+      if (id) { e.target.closest("tr").remove(); $("cWish").textContent = $("wishes").children.length; }
+      else e.target.closest(".reply").remove();
     };
     if (key) load();
   </script>
