@@ -764,7 +764,13 @@
     const wishList = document.getElementById("wishList");
     const wishEmpty = document.getElementById("wishEmpty");
     // "kuyov" + "yangasi" → "Kuyovning yangasi"
-    const signature = (side, relation) => `${side === "kelin" ? "Kelinning" : "Kuyovning"} ${relation.trim().toLowerCase()}`;
+    // guests sometimes type the prefix themselves ("Kelinning opasi", "Куйовнинг акаси") → show their text as-is
+    const HAS_PREFIX = /^(kuyov|kelin|куёв|куйов|келин)(ning|nig|ni|нинг|ниг|ни)(?=[\s:,.!]|$)/iu;
+    const signature = (side, relation) => {
+      const rel = relation.trim();
+      if (HAS_PREFIX.test(rel)) return rel.charAt(0).toUpperCase() + rel.slice(1);
+      return `${side === "kelin" ? "Kelinning" : "Kuyovning"} ${rel.toLowerCase()}`;
+    };
     const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text) n.textContent = text; return n; };
     function wishItem(w) { // textContent only → guest input can never inject HTML
       const li = el("li");

@@ -69,7 +69,9 @@
 
       const wishes = await (await fetch("/api/wishes", { cache: "no-store" })).json();
       $("cWish").textContent = wishes.length;
-      const sign = (w) => w.relation ? `${w.side === "kelin" ? "Kelinning" : "Kuyovning"} ${w.relation}` : "";
+      const HAS_PREFIX = /^(kuyov|kelin|куёв|куйов|келин)(ning|nig|ni|нинг|ниг|ни)(?=[\s:,.!]|$)/iu; // same rule as the main page
+      const sign = (w) => !w.relation ? "" : HAS_PREFIX.test(w.relation.trim()) ? w.relation.trim()
+        : `${w.side === "kelin" ? "Kelinning" : "Kuyovning"} ${w.relation}`;
       const side = (s) => s === "kelin" ? "Kelin tomonidan" : "Kuyov tomonidan";
       const replies = (w) => (w.replies || []).map((r) => `<div class="reply"><b>↩ ${side(r.side)}</b>${r.name ? ` · ${esc(r.name)}` : ""}: ${esc(r.message)}
         <button class="del sm" data-reply="${esc(r.id)}">O'chirish</button></div>`).join("");
