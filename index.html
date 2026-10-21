@@ -226,7 +226,7 @@
     .wish-sign small { font: 12px var(--caps); letter-spacing: .12em; color: #9a8a76; }
     .wish-sign i { font-style: normal; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #f3e6cc; color: #8a6a2a; }
     .wish-sign i.kelin { background: #f6dcd6; color: #8c4a44; }
-    .wish-text { font-size: 18px; line-height: 1.5; word-wrap: break-word; }
+    .wish-text { font-size: 18px; line-height: 1.5; word-wrap: break-word; white-space: pre-wrap; overflow-wrap: anywhere; }
     /* replies under a wish */
     .replies { margin-top: 12px; display: grid; gap: 8px; }
     .replies:empty { display: none; }
@@ -235,7 +235,7 @@
     .reply-sign i { font-style: normal; font-size: 12px; padding: 2px 9px; border-radius: 999px; background: #f3e6cc; color: #8a6a2a; }
     .reply-sign i.kelin { background: #f6dcd6; color: #8c4a44; }
     .reply-sign small { font: 12px var(--caps); letter-spacing: .1em; color: #9a8a76; }
-    .reply-text { font-size: 16px; line-height: 1.45; word-wrap: break-word; }
+    .reply-text { font-size: 16px; line-height: 1.45; word-wrap: break-word; white-space: pre-wrap; overflow-wrap: anywhere; }
     .reply-btn { margin-top: 10px; background: none; border: 0; cursor: pointer; padding: 4px 0; color: var(--gold); font: 12px var(--caps); letter-spacing: .12em; }
     .reply-btn:hover { text-decoration: underline; }
     .reply-form { margin-top: 12px; display: grid; gap: 10px; padding: 14px; background: #f7eddc; border-radius: 12px; animation: rise .3s ease; }
@@ -252,6 +252,8 @@
     .side input:checked + span { background: var(--gold); border-color: var(--gold); color: #fff; }
     .side input:focus-visible + span { box-shadow: 0 0 0 3px rgba(166,125,43,.3); }
     .sign-preview { text-align: center; margin: -4px 0 18px; font-family: var(--script); font-size: 30px; color: var(--gold); }
+    .counter { display: block; margin-top: 7px; font-size: 12px; color: #9a8a76; text-align: right; }
+    .counter.warn { color: #9b2c2c; font-weight: 700; }
     .wish-empty { margin-top: 28px; color: #9a8a76; }
 
     .closing h2 { font-size: clamp(38px, 10vw, 64px); }
@@ -507,7 +509,7 @@
           </div>
           <div class="field">
             <label for="rMsg" data-i18n="message">Xabar</label>
-            <textarea class="input" id="rMsg" name="message" maxlength="500" data-i18n-ph="rsvpMsgPh" placeholder="Kelin-kuyov bilan xabar ulashing..."></textarea>
+            <textarea class="input" id="rMsg" name="message" maxlength="4000" data-i18n-ph="rsvpMsgPh" placeholder="Kelin-kuyov bilan xabar ulashing..."></textarea>
           </div>
           <button class="submit" type="submit" data-i18n="send">Javob yuborish</button>
           <p class="msg" aria-live="polite"></p>
@@ -528,7 +530,7 @@
           <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
           <div class="field with-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h16v11H9l-5 4z"/></svg>
-            <textarea class="input" name="message" maxlength="500" required data-i18n-ph="wishPh" placeholder="Tabrik so'zingiz bo'lsa shu yerga yozing" aria-label="Tabrik"></textarea>
+            <textarea class="input" name="message" maxlength="4000" required data-i18n-ph="wishPh" placeholder="Tabrik so'zingiz bo'lsa shu yerga yozing" aria-label="Tabrik"></textarea>
           </div>
           <div class="field" role="radiogroup" aria-labelledby="sideQ">
             <span class="legend" id="sideQ" data-i18n="sideQ">Siz kuyovga kim bo'lasiz yoki kelinga?</span>
@@ -582,7 +584,7 @@
         needWish: "Iltimos, tabrik so'zingizni yozing", needSide: "Kuyov yoki kelin tomonini tanlang",
         needRel: "Kim bo'lishingizni yozing (masalan: yangasi)",
         replyBtn: "Javob berish", replyPh: "Javobingizni yozing", replyName: "Ismingiz (ixtiyoriy)", cancel: "Bekor qilish",
-        sendReply: "Javob yuborish", needReplySide: "Kuyov yoki kelin tomonidan ekanini tanlang", needReply: "Javob matnini yozing", netErr: "Xatolik yuz berdi, qaytadan urinib ko'ring", wishLoadErr: "Tilaklarni yuklab bo'lmadi"
+        sendReply: "Javob yuborish", needReplySide: "Kuyov yoki kelin tomonidan ekanini tanlang", needReply: "Javob matnini yozing", netErr: "Xatolik yuz berdi, qaytadan urinib ko'ring", wishLoadErr: "Tilaklarni yuklab bo'lmadi", tooLong: "Matn juda uzun (maksimal {n} belgi)"
       },
       en: {
         tap: "Tap to open", weddingDay: "Wedding day", scroll: "Scroll down",
@@ -604,7 +606,7 @@
         needWish: "Please write your congratulations", needSide: "Please choose the groom's or bride's side",
         needRel: "Please say who you are (e.g. do'sti)",
         replyBtn: "Reply", replyPh: "Write your reply", replyName: "Your name (optional)", cancel: "Cancel",
-        sendReply: "Send reply", needReplySide: "Choose the groom's or bride's side", needReply: "Please write your reply", netErr: "Something went wrong, please try again", wishLoadErr: "Could not load wishes"
+        sendReply: "Send reply", needReplySide: "Choose the groom's or bride's side", needReply: "Please write your reply", netErr: "Something went wrong, please try again", wishLoadErr: "Could not load wishes", tooLong: "Text is too long (max {n} characters)"
       },
       ru: {
         tap: "Нажмите, чтобы открыть", weddingDay: "День свадьбы", scroll: "Листайте вниз",
@@ -626,7 +628,7 @@
         needWish: "Пожалуйста, напишите поздравление", needSide: "Выберите сторону жениха или невесты",
         needRel: "Укажите, кем вы приходитесь (напр.: do'sti)",
         replyBtn: "Ответить", replyPh: "Напишите ответ", replyName: "Ваше имя (необязательно)", cancel: "Отмена",
-        sendReply: "Отправить ответ", needReplySide: "Выберите сторону жениха или невесты", needReply: "Напишите текст ответа", netErr: "Произошла ошибка, попробуйте ещё раз", wishLoadErr: "Не удалось загрузить пожелания"
+        sendReply: "Отправить ответ", needReplySide: "Выберите сторону жениха или невесты", needReply: "Напишите текст ответа", netErr: "Произошла ошибка, попробуйте ещё раз", wishLoadErr: "Не удалось загрузить пожелания", tooLong: "Текст слишком длинный (максимум {n} символов)"
       }
     };
     // Uzbek source text lives in the HTML; copy it into T.uz so switching back works
@@ -729,18 +731,63 @@
     /* ───── Shared form helper ───── */
     async function postJSON(url, data, headers = {}) {
       const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(data) });
-      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || res.status);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const err = new Error(body.error || res.status);
+        err.code = body.code || ""; // e.g. "too_long" → translated in the guest's language
+        err.max = body.max || 0;
+        throw err;
+      }
       return res.json();
     }
+    const ERR_T = { too_long: "tooLong" }; // server error code → i18n key
+    const errText = (err) => (ERR_T[err.code] ? t(ERR_T[err.code]).replace("{n}", err.max || LIMITS.wish) : err.message || t("netErr"));
     const store = { // per-device memory only (e.g. "already answered"); tolerant of blocked storage
       get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
       set: (k, v) => { try { localStorage.setItem(k, v); } catch {} }
     };
 
+    /* ───── Long messages: paste, counter, limit ───── */
+    // Long congratulations must fit: the old 500-char cap cut the text in half.
+    const LIMITS = { wish: 4000, rsvp: 4000, reply: 4000 };
+
+    // Text copied from Word / Google Docs arrives with \r\n, non-breaking spaces and stray blank lines → clean it.
+    function cleanPaste(ta) {
+      ta.addEventListener("paste", (e) => {
+        const text = (e.clipboardData || window.clipboardData)?.getData("text/plain");
+        if (!text) return;
+        e.preventDefault();
+        const start = ta.selectionStart, end = ta.selectionEnd;
+        const room = ta.maxLength > 0 ? ta.maxLength - (ta.value.length - (end - start)) : text.length;
+        const clean = text.replace(/\r\n?/g, "\n").replace(/\u00a0/g, " ")
+          .replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").slice(0, Math.max(0, room));
+        ta.value = ta.value.slice(0, start) + clean + ta.value.slice(end);
+        ta.selectionStart = ta.selectionEnd = start + clean.length;
+        ta.dispatchEvent(new Event("input", { bubbles: true })); // keeps the counter and the form in sync
+      });
+    }
+
+    // Live counter so the guest sees how much room is left instead of hitting a silent wall.
+    function attachCounter(ta, max) {
+      ta.maxLength = max;
+      cleanPaste(ta);
+      let c = ta.parentElement.querySelector(".counter");
+      if (!c) { c = document.createElement("span"); c.className = "counter"; ta.after(c); }
+      const update = () => {
+        const n = ta.value.length;
+        c.textContent = `${n} / ${max}`;
+        c.classList.toggle("warn", n > max * 0.9);
+      };
+      ta.addEventListener("input", update);
+      update();
+      return ta;
+    }
+
     /* ───── RSVP ───── */
     const rsvpForm = document.getElementById("rsvpForm");
     const rsvpThanks = document.getElementById("rsvpThanks");
     const rsvpOpen = document.getElementById("rsvpOpen");
+    attachCounter(document.getElementById("rMsg"), LIMITS.rsvp);
     if (store.get("rsvpSent")) { rsvpOpen.hidden = true; rsvpThanks.hidden = false; }
     rsvpOpen.onclick = () => { rsvpOpen.hidden = true; rsvpForm.hidden = false; rsvpForm.elements.namedItem("name").focus(); };
     rsvpForm.onsubmit = async (e) => {
@@ -750,12 +797,13 @@
       msg.className = "msg err";
       if (!data.name) return msg.textContent = t("needName");
       if (!data.attending) return msg.textContent = t("needAttend");
+      if (data.message.length > LIMITS.rsvp) return msg.textContent = t("tooLong").replace("{n}", LIMITS.rsvp);
       btn.disabled = true; msg.className = "msg"; msg.textContent = t("sending");
       try {
         await postJSON("/api/rsvp", data);
         store.set("rsvpSent", "1");
         rsvpForm.hidden = true; rsvpThanks.hidden = false;
-      } catch { msg.className = "msg err"; msg.textContent = t("netErr"); }
+      } catch (err) { msg.className = "msg err"; msg.textContent = errText(err); }
       finally { btn.disabled = false; }
     };
 
@@ -763,6 +811,7 @@
     const wishForm = document.getElementById("wishForm");
     const wishList = document.getElementById("wishList");
     const wishEmpty = document.getElementById("wishEmpty");
+    attachCounter(wishForm.elements.message, LIMITS.wish);
     // "kuyov" + "yangasi" → "Kuyovning yangasi"
     // guests sometimes type the prefix themselves ("Kelinning opasi", "Куйовнинг акаси") → show their text as-is
     const HAS_PREFIX = /^(kuyov|kelin|куёв|куйов|келин)(ning|nig|ni|нинг|ниг|ни)(?=[\s:,.!]|$)/iu;
@@ -800,12 +849,13 @@
       const who = el("div", "reply-sign");
       who.append(el("i", couple.side, t(couple.side === "kelin" ? "sideKelin" : "sideKuyov")));
       const name = el("input", "input"); name.name = "name"; name.maxLength = 60; name.placeholder = t("replyName"); name.value = couple.name;
-      const msg = el("textarea", "input"); msg.name = "message"; msg.maxLength = 500; msg.placeholder = t("replyPh");
+      const msg = el("textarea", "input"); msg.name = "message"; msg.placeholder = t("replyPh");
       const actions = el("div", "reply-actions");
       const cancel = el("button", "cancel", t("cancel")); cancel.type = "button";
       const send = el("button", "submit sm", t("sendReply")); send.type = "submit";
       actions.append(cancel, send);
       f.append(who, name, msg, actions, el("p", "msg"));
+      attachCounter(msg, LIMITS.reply); // the textarea needs a parent before the counter can be added
       return f;
     }
     wishList.addEventListener("click", (e) => {
@@ -827,6 +877,7 @@
       const data = { wishId: li.dataset.id, name: f.elements.namedItem("name").value.trim(), message: f.elements.message.value.trim() };
       msg.className = "msg err";
       if (!data.message) return msg.textContent = t("needReply");
+      if (data.message.length > LIMITS.reply) return msg.textContent = t("tooLong").replace("{n}", LIMITS.reply);
       btn.disabled = true; msg.className = "msg"; msg.textContent = t("sending");
       try {
         const { id, side, name } = await postJSON("/api/replies", data, { "x-reply-key": couple.key });
@@ -834,7 +885,7 @@
         rememberMine({ kind: "reply", wishId: data.wishId, item });
         li.querySelector(".replies").append(replyItem(item));
         f.remove();
-      } catch { msg.className = "msg err"; msg.textContent = t("netErr"); btn.disabled = false; }
+      } catch (err) { msg.className = "msg err"; msg.textContent = errText(err); btn.disabled = false; }
     });
     // live preview of how the signature will look
     const signPreview = document.getElementById("signPreview");
@@ -891,6 +942,7 @@
                      name: f.namedItem("name").value.trim(), website: f.website.value };
       msg.className = "msg err";
       if (!data.message) return msg.textContent = t("needWish");
+      if (data.message.length > LIMITS.wish) return msg.textContent = t("tooLong").replace("{n}", LIMITS.wish);
       if (!data.side) return msg.textContent = t("needSide");
       if (!data.relation) return msg.textContent = t("needRel");
       btn.disabled = true; msg.className = "msg"; msg.textContent = t("sending");
@@ -900,7 +952,7 @@
         rememberMine({ kind: "wish", item });
         wishList.prepend(wishItem({ ...item, replies: [] })); wishEmpty.hidden = true; wishList.scrollTop = 0;
         f.message.value = ""; msg.textContent = ""; // keep side/relation so a guest can add another wish quickly
-      } catch { msg.className = "msg err"; msg.textContent = t("netErr"); }
+      } catch (err) { msg.className = "msg err"; msg.textContent = errText(err); }
       finally { btn.disabled = false; }
     };
     loadWishes();

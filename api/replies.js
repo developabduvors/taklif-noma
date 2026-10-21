@@ -4,6 +4,7 @@ import { timingSafeEqual } from "node:crypto";
 import { saveEntry, removeEntry, entryExists, isId, clean, isAdmin, json } from "./_store.js";
 
 const DEFAULT_NAME = { kuyov: "Bobomurod", kelin: "Sarvinoz" };
+const LIMITS = { message: 4000, name: 60 };
 
 const same = (a, b) => {
   const x = Buffer.from(String(a)), y = Buffer.from(String(b));
@@ -28,8 +29,11 @@ export async function POST(req) {
   if (!side) return json({ error: "Faqat kuyov va kelin javob bera oladi" }, 401);
   const body = await req.json().catch(() => ({}));
   const wishId = isId(body.wishId) ? body.wishId : "";
-  const name = clean(body.name, 60) || DEFAULT_NAME[side];
-  const message = clean(body.message, 500);
+  const name = clean(body.name, LIMITS.name) || DEFAULT_NAME[side];
+  const raw = typeof body.message === "string" ? body.message.trim() : "";
+  // never cut a long reply in half → refuse it and let the client show a clear message
+  if (raw.length > LIMITS.message) return json({ error: "Matn juda uzun", code: "too_long", max: LIMITS.message }, 400);
+  const message = raw;
   if (!wishId || !message) return json({ error: "Javob matni kerak" }, 400);
   if (!(await entryExists("wishes", wishId))) return json({ error: "Tabrik topilmadi" }, 404);
   const id = await saveEntry("replies", { wishId, side, name, message });
