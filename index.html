@@ -655,30 +655,19 @@
     const audio = document.getElementById("audio");
     const music = document.getElementById("music");
     const PLAY = '<path d="M4 2l10 6-10 6z"/>', PAUSE = '<path d="M3 2h4v12H3zM9 2h4v12H9z"/>';
-    let userPaused = false; // once a guest pauses, never auto-resume
+    let userPaused = false; // once a guest stops the music, never start it again by itself
     const syncMusic = () => {
       music.classList.toggle("playing", !audio.paused);
       music.classList.toggle("nudge", audio.paused && !userPaused);
       document.getElementById("musicIcon").innerHTML = audio.paused ? PLAY : PAUSE;
     };
     audio.onplay = audio.onpause = syncMusic;
+    // The music starts ONLY from the button: no autoplay, no "start on first tap".
     document.getElementById("musicBtn").onclick = (e) => {
       e.stopPropagation();
       if (audio.paused) { userPaused = false; audio.play().catch(() => {}); }
       else { userPaused = true; audio.pause(); }
     };
-    // Browsers block sound until the visitor interacts with the page.
-    // 1) try right away (allowed if the browser trusts this site, e.g. repeat visits)
-    // 2) otherwise start on the very first tap / click / key press anywhere
-    const tryPlay = () => { if (audio.paused && !userPaused) audio.play().catch(() => {}); };
-    tryPlay();
-    const GESTURES = ["pointerdown", "touchend", "keydown", "click"];
-    function onFirstGesture(e) {
-      if (music.contains(e.target)) return; // the music button handles itself
-      tryPlay();
-      if (!audio.paused) GESTURES.forEach(ev => document.removeEventListener(ev, onFirstGesture, true));
-    }
-    GESTURES.forEach(ev => document.addEventListener(ev, onFirstGesture, true));
     syncMusic();
 
     /* ───── Envelope ───── */
@@ -686,7 +675,6 @@
     function openEnvelope() {
       if (env.classList.contains("opening")) return;
       env.classList.add("opening");
-      audio.play().catch(() => {}); // tap = user gesture, so mobile browsers allow audio
       setTimeout(() => {
         env.classList.add("opened");
         document.body.classList.remove("locked");
