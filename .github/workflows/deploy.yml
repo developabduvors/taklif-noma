@@ -1,0 +1,51 @@
+name: Deploy to Vercel
+
+# GitHub -> Vercel avto-deploy.
+# Vercel'ning GitHub App bu repoga ulanmagan (commit'larda Vercel check-run yo'q),
+# shuning uchun push -> deploy ishni shu workflow qiladi.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check VERCEL_TOKEN
+        id: token
+        run: |
+          if [ -z "$VERCEL_TOKEN" ]; then
+            echo "::warning::VERCEL_TOKEN secret yo'q — deploy o'tkazilmaydi. Vercel → Settings → Tokens → Create, keyin: gh secret set VERCEL_TOKEN"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Vercel CLI
+        if: steps.token.outputs.skip != 'true'
+        run: npm install --global vercel@latest
+
+      - name: Pull project settings and env
+        if: steps.token.outputs.skip != 'true'
+        run: vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Build
+        if: steps.token.outputs.skip != 'true'
+        run: vercel build --prod --token="$VERCEL_TOKEN"
+
+      - name: Deploy to production
+        if: steps.token.outputs.skip != 'true'
+        run: vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
