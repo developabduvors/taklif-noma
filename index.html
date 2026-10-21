@@ -675,6 +675,8 @@
     function openEnvelope() {
       if (env.classList.contains("opening")) return;
       env.classList.add("opening");
+      // the red seal in the middle was pressed → background music starts automatically
+      if (!userPaused) audio.play().catch(() => {}); // tap = user gesture, so mobile browsers allow audio
       setTimeout(() => {
         env.classList.add("opened");
         document.body.classList.remove("locked");
